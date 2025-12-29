@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model book_categories {
+  category_id   Int    @id @default(autoincrement())
+  category_name String @db.VarChar(255)
+}
+
+model books {
+  book_id Int @id @default(autoincrement())
+}
+
+model book_category_links {
+  book_id     Int
+  category_id Int
+
+  @@id([book_id, category_id])
+  @@index([category_id], map: "category_id")
+}
+
+model activity_photos {
+  photo_id Int @id @default(autoincrement())
+}
+
+model book_photos {
+  photo_id Int @id @default(autoincrement())
+}
+
+model borrowings {
+  borrowing_id Int @id @default(autoincrement())
+}
+
+model fines {
+  fine_id Int @id @default(autoincrement())
+}
+
+model ratings {
+  rating_id Int @id @default(autoincrement())
+}
+
+model reservations {
+  reservation_id Int @id @default(autoincrement())
+}
+
+model staff_picks {
+  pick_id Int @id @default(autoincrement())
+}
+
+model users {
+  user_id Int @id @default(autoincrement())
+}
