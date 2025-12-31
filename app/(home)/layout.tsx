@@ -13,7 +13,7 @@ export default function HomeLayout({
       <div className="w-full h-full">
         <Header />
         <Navbar />
-        <div className="p-4">{children}</div>
+        <div className="p-2">{children}</div>
       </div>
       <Footer />
     </div>
