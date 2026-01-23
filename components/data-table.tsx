@@ -102,7 +102,7 @@ export default function DataTable<TData, TValue>({
   }, [pagination, pathname, router]);
 
   return (
-    <div className="container mx-auto max-w-4xl space-y-2">
+    <div className="container mx-auto max-w-4xl space-y-2 p-4">
       <DataTableFilterInput table={table} column={filter_column} />
       <DataTableViewOptions table={table} />
       <div className="rounded-md border">
