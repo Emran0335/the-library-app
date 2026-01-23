@@ -78,3 +78,15 @@ export async function deleteCategory(id: number, path: string) {
     throw error;
   }
 }
+
+export async function deleteBook(book_id: number, path: string) {
+  await prisma.$transaction(
+    async (t) =>
+      await t.books.delete({
+        where: {
+          book_id: book_id,
+        },
+      })
+  );
+  revalidatePath(path);
+}

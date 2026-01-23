@@ -19,7 +19,7 @@ export default async function CategoriesPage({
   ]);
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="p-4 flex flex-col space-y-4">
       <AddCategoryButton />
       <Suspense fallback={<Skeleton />}>
         <CategoriesTable data={{ data: categories, total: total }} />
