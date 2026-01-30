@@ -32,7 +32,11 @@ const addBookFormSchema = z.object({
   photos: z.array(z.string()),
 });
 
-export default function AddBookDialog({ open, setOpen }: AddBookDialogProps) {
+export default function AddBookDialog({
+  open,
+  setOpen,
+  book,
+}: AddBookDialogProps) {
   const [categories, setCategories] = useState<
     { category_id: number; category_name: string }[]
   >([]);
@@ -40,7 +44,7 @@ export default function AddBookDialog({ open, setOpen }: AddBookDialogProps) {
   const path = usePathname();
   const { toast } = useToast();
 
-  const form = useForm({
+  const bookForm = useForm({
     resolver: zodResolver(addBookFormSchema),
     defaultValues: {
       name: "",
@@ -59,6 +63,26 @@ export default function AddBookDialog({ open, setOpen }: AddBookDialogProps) {
       setCategories(cats.data);
     })();
   }, []);
+
+  useEffect(() => {
+    if (book) {
+      bookForm.setValue("id", book.book_id);
+      bookForm.setValue("name", book.name);
+      bookForm.setValue("isbn", book.isbn);
+      bookForm.setValue("no_of_copies", book.no_of_copies);
+      bookForm.setValue("publish_year", book.publish_year);
+      bookForm.setValue(
+        "category",
+        book.book_category_links?.map((c) => c.category_id) as number[],
+      );
+      bookForm.setValue("photos", book.book_photos?.map((p) => p.url) || []);
+      bookForm.setValue("author", book.author);
+    }
+  }, [book, bookForm]);
+
+  const handleItemSelect = (item: number)=> {
+    const newValue = bookForm
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
