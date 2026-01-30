@@ -1,7 +1,26 @@
-import React from 'react'
+"use client";
 
-export default function Rating() {
+import React from "react";
+import { StarIcon } from "lucide-react";
+
+export default function Rating({
+  rating,
+  ratingClick,
+}: {
+  rating: number;
+  ratingClick?: (index: number) => void;
+}) {
   return (
-    <div>Rating</div>
-  )
+    <div className="flex">
+      {[...Array(5)].map((_, index) => (
+        <StarIcon
+          size={16}
+          key={index}
+          onClick={() => ratingClick?.(index + 1)}
+          className="cursor-pointer text-orange-300"
+          fill={`${index < rating ? "orange" : "#fff"}`}
+        />
+      ))}
+    </div>
+  );
 }
