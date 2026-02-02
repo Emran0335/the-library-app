@@ -23,16 +23,26 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
-import { Popover, PopoverTrigger } from "./ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Loader } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "./ui/command";
+import ImageDropzone from "./ImageDropzone";
 
 type AddBookDialogProps = {
   open: boolean;
@@ -156,7 +166,7 @@ export default function AddBookDialog({
     bookForm.setValue("photos", [...existinPhotos, ...uploadedFiles]);
   };
 
-  const handleFileDelete = async (url: string) => {
+  const handleFileDeleted = async (url: string) => {
     if (book) {
       const photoToDelete = book.book_photos?.filter(
         (book_photo) => book_photo.url === url,
@@ -221,12 +231,48 @@ export default function AddBookDialog({
               />
               <FormField
                 control={bookForm.control}
+                name="no_of_copies"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>No of Copies</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="1"
+                        type="number"
+                        {...field}
+                        value={field.value as number}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={bookForm.control}
+                name="publish_year"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Publish year</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="2025"
+                        {...field}
+                        type="number"
+                        value={field.value as number | undefined}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={bookForm.control}
                 name="category"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>
                     <Popover>
-                      <PopoverTrigger>
+                      <PopoverTrigger asChild>
                         <FormControl>
                           <Button
                             variant="outline"
@@ -246,14 +292,71 @@ export default function AddBookDialog({
                                   )
                                   .join("")
                               : "Select a category"}
-                              <ChevronsUpDown className="opacity-50"/>
+                            <ChevronsUpDown className="opacity-50" />
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
+                      <PopoverContent className="w-75 p-0">
+                        <Command>
+                          <CommandInput
+                            placeholder="Search category..."
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>No category found.</CommandEmpty>
+                            <CommandGroup>
+                              {categories.map((category) => (
+                                <CommandItem
+                                  value={category.category_name}
+                                  key={category.category_id}
+                                  onSelect={() =>
+                                    handleItemSelect(category.category_id)
+                                  }
+                                >
+                                  {category.category_name}
+                                  <Check
+                                    className={cn(
+                                      "ml-auto",
+                                      field.value.includes(category.category_id)
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
                     </Popover>
+                    <FormDescription>
+                      If a book belongs to multiple categories, please select
+                      them.
+                    </FormDescription>
                   </FormItem>
                 )}
               />
+              <FormField
+                control={bookForm.control}
+                name="photos"
+                render={({ field }) => (
+                  <ImageDropzone
+                    photos={field.value}
+                    onFilesAdded={handleFileAdded}
+                    onFileDeleted={handleFileDeleted}
+                  />
+                )}
+              />
+              <div className="flex flex-col w-full space-y-2">
+                {processing ? (
+                  <div className="flex">
+                    <Loader className="mr-2" />
+                    Saving...
+                  </div>
+                ) : (
+                  <Button type="submit">Save</Button>
+                )}
+              </div>
             </form>
           </Form>
         </DialogHeader>
